@@ -3,6 +3,7 @@ var router = express.Router();
 
 /* GET flights listing. */
 router.get('/', function (req, res, next) {
+  const flightToFind = req.body;
   // dummy data
   const flights = [{
       id: '1',
