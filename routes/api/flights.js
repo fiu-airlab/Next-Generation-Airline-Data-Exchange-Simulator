@@ -3,11 +3,13 @@ var router = express.Router();
 
 /* GET flights listing. */
 router.get('/', function (req, res, next) {
-  const flightToFind = req.body;
+  const flightToFind = req.query;
+  console.log(flightToFind);
   // dummy data
   const flights = [{
       id: '1',
       airline_name: 'Lufthansa',
+      date: 'Jan 30 2019',
       time: '7:35 PM - 5:20 PM',
       route: 'MIA-HKG',
       price: '$2,153'
@@ -15,6 +17,7 @@ router.get('/', function (req, res, next) {
     {
       id: '2',
       airline_name: 'American',
+      date: 'Jan 30 2019',
       time: '8:35 PM - 5:20 PM',
       route: 'MIA-HKG',
       price: '$1,553'
@@ -22,6 +25,7 @@ router.get('/', function (req, res, next) {
     {
       id: '3',
       airline_name: 'Austrian',
+      date: 'Jan 30 2019',
       time: '10:00 PM - 5:20 PM',
       route: 'MIA-HKG',
       price: '$1,253'
@@ -29,6 +33,7 @@ router.get('/', function (req, res, next) {
     {
       id: '4',
       airline_name: 'American',
+      date: 'Jan 30 2019',
       time: '8:35 PM - 5:20 PM',
       route: 'MIA-HKG',
       price: '$1,553'
@@ -36,6 +41,7 @@ router.get('/', function (req, res, next) {
     {
       id: '5',
       airline_name: 'Austrian',
+      date: 'Jan 30 2019',
       time: '10:00 PM - 5:20 PM',
       route: 'MIA-HKG',
       price: '$1,253'
