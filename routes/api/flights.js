@@ -5,6 +5,14 @@ var flights = require('../../data/hardcoded_data.json');
 /* GET flights listing. */
 router.get('/', function (req, res, next) {
   const flightToFind = req.query;
+  const pageSize = req.query.pagesize;
+  const currentPage = req.query.page;
+  
+  // pagination set-up for when we have the db
+  if(pageSize && currentPage) {
+
+  }
+
   console.log(flightToFind);
   console.log(flights);
 
