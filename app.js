@@ -5,12 +5,21 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var helmet = require('helmet');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/api/users');
 var flightsRouter = require('./routes/api/flights');
 
 var app = express();
+
+mongoose.connect("mongodb+srv://reyisaac:yGwp2F6ysKVKKEnO@cluster0-hxsjs.mongodb.net/test?retryWrites=true")
+  .then(() => {
+    console.log('Connected to database!');
+  })
+  .catch(() => {
+    console.log('Connection failed!')
+  });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
