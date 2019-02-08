@@ -8,12 +8,13 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/api/users');
+var userRouter = require('./routes/api/user');
 var flightsRouter = require('./routes/api/flights');
 
 var app = express();
 
-mongoose.connect("mongodb+srv://reyisaac:yGwp2F6ysKVKKEnO@cluster0-hxsjs.mongodb.net/test?retryWrites=true")
+// mongoose connection.
+mongoose.connect("mongodb+srv://reyisaac:yGwp2F6ysKVKKEnO@cluster0-hxsjs.mongodb.net/node-angular")
   .then(() => {
     console.log('Connected to database!');
   })
@@ -46,7 +47,7 @@ app.use(bodyParser.json());
 
 app.use('/', indexRouter);
 app.use('/api/flights', flightsRouter);
-app.use('/api/users', usersRouter);
+app.use('/api/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -10,11 +10,11 @@ const flightSchema = mongoose.Schema({
         required: true
     },
     dep_date: {
-        type: Date,
+        type: String,
         required: true
     },
     arr_date: {
-        type: Date,
+        type: String,
         required: true
     },
     dep_time: {
