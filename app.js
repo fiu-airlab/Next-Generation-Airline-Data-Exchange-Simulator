@@ -10,11 +10,12 @@ var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/api/user');
 var flightsRouter = require('./routes/api/flights');
-
+var cors = require('cors');
+var pas = require('./pas');
 var app = express();
 
 // mongoose connection.
-mongoose.connect("mongodb+srv://reyisaac:yGwp2F6ysKVKKEnO@cluster0-hxsjs.mongodb.net/node-angular")
+mongoose.connect(pas, { useNewUrlParser: true, useCreateIndex: true })
   .then(() => {
     console.log('Connected to database!');
   })
@@ -26,14 +27,8 @@ mongoose.connect("mongodb+srv://reyisaac:yGwp2F6ysKVKKEnO@cluster0-hxsjs.mongodb
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// heders for accessing from any client
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Header',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-  next();
-});
+// headers for accessing from any client
+app.use(cors());
 
 app.use(helmet());
 app.use(logger('dev'));

@@ -33,7 +33,6 @@ router.post('/signup', function(req, res, next) {
 /* POST login. */
 router.post('/login', function(req, res, next) {
   let fetchedUser;
-  
   User.findOne({ email: req.body.email })
   .then(user => {
     if (!user) {
@@ -42,7 +41,6 @@ router.post('/login', function(req, res, next) {
       });
     }
     fetchedUser = user;
-
     // user found, check right password
     return bcrypt.compare(req.body.password, user.password)
   })
@@ -60,7 +58,10 @@ router.post('/login', function(req, res, next) {
       { expiresIn: '2h'}
     );
     res.status(200).json({
-      token: token
+      token: token,
+      expiresIn: 7200,
+      first_name: fetchedUser.first_name, 
+      last_name: fetchedUser.last_name
     });
   })
   .catch(err => {
