@@ -11,9 +11,9 @@ var indexRouter = require('./routes/index');
 var userRouter = require('./routes/api/user');
 var flightsRouter = require('./routes/api/flights');
 var cors = require('cors');
-var pas = require('./pas');
 var app = express();
 
+var pas = require('./pas');
 // mongoose connection.
 mongoose.connect(pas, { useNewUrlParser: true, useCreateIndex: true })
   .then(() => {

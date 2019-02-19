@@ -1,54 +1,40 @@
 var express = require('express');
 var router = express.Router();
-var flights = require('../../data/hardcoded_data.json');
 
 const Flight = require('../../models/flight');
+const modifyDepartureDate = require('../../utils/dates');
 
 /* GET flights listing. */
 router.get('/', function (req, res, next) {
   const flightToFind = req.query;
-  const pageSize = req.query.pagesize;
-  const currentPage = req.query.page;
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
   
-  const flight = new Flight({
-    departure: 'JFK',
-    arrival: 'MIA',
-    dep_date: '03/21/2019',
-    arr_date: '03/21/2019',
-    dep_time: '7:35 PM',
-    arr_time: '11:30 PM',
-    class: 'Y',
-    price: '10.98',
-    airline: 'American Airlines',
-  });
-  flight.save();
+  const modifiedDepDate = modifyDepartureDate(flightToFind.dep_date);
+
+  const flightQuery = Flight.find({ dep_date: modifiedDepDate, departure: flightToFind.departure, arrival: flightToFind.arrival });
+  let fetchedflights;
 
   // pagination set-up for when we have the db
   if(pageSize && currentPage) {
-
+    flightQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
   }
 
   console.log(flightToFind);
-  console.log(flights);
-
- /*
-  data to use for querying.  
-  flightToFind.id;
-  flightToFind.departure;
-  flightToFind.arrival;
-  flightToFind.dep_date;
-  flightToFind.arr_date; 
-  flightToFind.class;
-  flightToFind.trip; */
   
-  Flight.find()
-    .then(documents => {
-      res.status(200).json({
-        message: 'flights fetched successully!',
-        flights: documents
-      });
-    });
-
+  flightQuery.then(documents => {
+    fetchedflights = documents;
+    return Flight.countDocuments();
+  })
+  .then(count => {
+    res.status(200).json({
+      message: "Flights fetched successfully!",
+      flights: fetchedflights,
+      maxFlights: count
+    })
+  });
 });
 
 module.exports = router;
