@@ -1,11 +1,11 @@
-function modifyDepartureDate(depDate) {
-    const month = monthFromName(depDate.split(" ")[1]);
-    const day = depDate.split(" ")[2];
-    const year = depDate.split(" ")[3];
+function modifyDate(date) {
+    const month = monthFromName(date.split(" ")[1]);
+    const day = date.split(" ")[2];
+    const year = date.split(" ")[3];
 
-    const date = month + '/' + OneDigitBellowTen(day) + '/' + year;
+    const newDate = month + '/' + OneDigitBellowTen(day) + '/' + year;
     
-    return date;
+    return newDate;
 }
 
 function monthFromName(month){
@@ -47,4 +47,4 @@ function OneDigitBellowTen(n) {
         return n;
 }
 
-module.exports = modifyDepartureDate;
+module.exports = modifyDate;
