@@ -24,7 +24,7 @@ router.get('/oneway', function (req, res, next) {
     
   flightQuery.then(documents => {
     fetchedflights = documents;
-    return Flight.countDocuments();
+    return flightQuery.countDocuments();
   })
   .then(count => {
     res.status(200).json({
@@ -35,7 +35,7 @@ router.get('/oneway', function (req, res, next) {
   });
 });
 
-/* GET flights/oneway listing. */
+/* GET flights/roundtrip listing. */
 router.get('/roundtrip', function (req, res, next) {
   const flightToFind = req.query;
   console.log(flightToFind);
@@ -45,21 +45,25 @@ router.get('/roundtrip', function (req, res, next) {
   const modifiedDepDate = modifyDate(flightToFind.dep_date);
   const modifiedArrDate = modifyDate(flightToFind.arr_date);
 
-  const depFlightQuery = Flight.find({ dep_date: modifiedDepDate, departure: flightToFind.departure, arrival: flightToFind.arrival});
-  const arrFlightQuery = Flight.find({ dep_date: modifiedArrDate, departure: flightToFind.arrival, arrival: flightToFind.departure});
+  const depFlightQuery =  Flight.find({ dep_date: modifiedDepDate, departure: flightToFind.departure, arrival: flightToFind.arrival});
+  const arrFlightQuery =  Flight.find({ dep_date: modifiedArrDate, departure: flightToFind.arrival, arrival: flightToFind.departure});
 
   let fetchedDepFlights;
   let fetchedArrFlights;
 
-  /*if(pageSize && currentPage) {
-    flightQuery
+  if(pageSize && currentPage) {
+    depFlightQuery
       .skip(pageSize * (currentPage - 1))
       .limit(pageSize);
-  }*/
+
+    arrFlightQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize)
+  }
 
   depFlightQuery.then(documents => {
     fetchedDepFlights = documents;
-  });
+  }).then( () =>{
 
   arrFlightQuery.then(documents => {
     fetchedArrFlights = documents;
@@ -73,7 +77,7 @@ router.get('/roundtrip', function (req, res, next) {
       destination: fetchedArrFlights,
       maxFlights: 10
     })
-  });
+  })});
 });
 
  
