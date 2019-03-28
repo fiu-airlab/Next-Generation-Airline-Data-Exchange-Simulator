@@ -4,41 +4,21 @@ const airShoppingRQ = require('../middleware/xml_schemas/airShoppingRQ');
 const http = require('../http/airlineHTTP');
 
 // finding one way flights
-exports.oneWayFlights = (req, res, next) => {
+exports.oneWayFlights = async (req, res, next) => {
   const flightToFind = req.query;
   console.log(flightToFind);
-  //const pageSize = +req.query.pagesize;
-  //const currentPage = +req.query.page;
 
   const modifiedDepDate = modifyDate(flightToFind.dep_date);
-
-  //building body xml for AirShoppingRQ
+  // building body xml for AirShoppingRQ
   var oneWayXmlRQ = airShoppingRQ.airShoppingRQ(flightToFind, modifiedDepDate);
-
-  //http connection to Airline
-  var httpRS = http.httpRS(oneWayXmlRQ);
-
-  console.log(httpRS)
-  /*const flightQuery = Flight.find({ dep_date: modifiedDepDate, departure: flightToFind.departure, arrival: flightToFind.arrival });
-  //let fetchedflights;
-
-  if(pageSize && currentPage) {
-    flightQuery
-      .skip(pageSize * (currentPage - 1))
-      .limit(pageSize);
-  }*/
-    
-  /*flightQuery.then(documents => {
-    fetchedflights = documents;
-    return flightQuery.countDocuments();
-  })
-  .then(/*count => { */
+  // http connection to Airline
+  http.httpRS(oneWayXmlRQ, modifiedDepDate, (response) => {
     res.status(200).json({
       message: "Flights fetched successfully!",
-      flights: httpRS
-      //maxFlights: count
-    })
-  ;
+      flights: response.flights,
+      maxFlights: 10
+    });
+  })
 }
 
 // finding Round Trip flights
