@@ -31,6 +31,6 @@ exports.airShoppingRQ = function(flightToFind, modifiedDepDate) {
         .up()
         .up()
     .up().end({ pretty: true});
-
+    console.log(oneWayXmlRQ);
     return oneWayXmlRQ;
 };
