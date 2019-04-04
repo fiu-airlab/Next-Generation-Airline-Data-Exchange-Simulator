@@ -1,6 +1,8 @@
 const Flight = require('../models/flight');
 const modifyDate = require('../utils/dates');
 const airShoppingRQ = require('../middleware/xml_schemas/airShoppingRQ');
+
+
 const http = require('../http/airlineHTTP');
 
 // finding one way flights
@@ -11,14 +13,38 @@ exports.oneWayFlights = async (req, res, next) => {
   const modifiedDepDate = modifyDate(flightToFind.dep_date);
   // building body xml for AirShoppingRQ
   var oneWayXmlRQ = airShoppingRQ.airShoppingRQ(flightToFind, modifiedDepDate);
-  // http connection to Airline
-  http.httpRS(oneWayXmlRQ, modifiedDepDate, (response) => {
-    res.status(200).json({
-      message: "Flights fetched successfully!",
-      flights: response.flights,
-      maxFlights: 10
-    });
-  })
+
+  let fetchedFlights;
+  const cachedFlights = Flight.find({ 
+    dep_date: modifiedDepDate, 
+    departure: flightToFind.departure, 
+    arrival: flightToFind.arrival,
+    airline: "A1" // for testing purposes TODO: Remove
+  });
+   
+  cachedFlights.then(documents => {
+      fetchedFlights = documents;
+    }).then( () => {
+      if (fetchedFlights.length >= 1) {
+      console.log('Is cached');
+        res.status(200).json({
+          message: "Flights fetched successfully!",
+          flights: fetchedFlights,
+          maxFlights: 10
+        })
+      }
+      else {
+        // http connection to Airline
+        console.log('Is Not cached');
+       http.httpRS(oneWayXmlRQ, modifiedDepDate, (response) => {
+         res.status(200).json({
+           message: "Flights fetched successfully!",
+           flights: response.flights,
+           maxFlights: 10
+         });
+       })
+      }
+    })
 }
 
 // finding Round Trip flights

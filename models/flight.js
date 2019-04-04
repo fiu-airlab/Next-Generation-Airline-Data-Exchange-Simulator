@@ -36,8 +36,9 @@ const flightSchema = mongoose.Schema({
     airline: {
         type: String,
         required: true
-    },
-});
+    }
+}, {timestamps: true});
 
+flightSchema.index({createdAt: 1},{expireAfterSeconds: 1200});
 module.exports = mongoose.model('Flight', flightSchema);
 

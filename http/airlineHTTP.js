@@ -1,6 +1,8 @@
 const request = require('request');
 const xml2js = require('xml2js');
 const crypto = require('crypto');
+const Flight = require('../models/flight');
+const uuid = require('uuid');
 
 var parser = new xml2js.Parser();
 
@@ -22,10 +24,11 @@ exports.httpRS = function(bodyXML, dep_date, callback) {
             var jsonFlight = { flights: [] };
             
             var count = Object.keys(offers).length;
+
             for (var i = 0; i < count; i++) {
                 jsonFlight['flights'].push(
                     {
-                        id: crypto.randomBytes(15).toString('hex'),
+                        id: uuid(),
                         class: "Y",
                         departure: result.Response.DataLists[0].OriginDestList[0].OriginDest[0].OriginCode[0],
                         arrival: result.Response.DataLists[0].OriginDestList[0].OriginDest[0].DestCode[0],
@@ -37,6 +40,22 @@ exports.httpRS = function(bodyXML, dep_date, callback) {
                         arr_time: "11:00AM"
                     }
                 );
+                // mongodb storing the flights for caching
+                var flight_instance = new Flight({ 
+                    id: uuid(),
+                    class: "Y",
+                    departure: result.Response.DataLists[0].OriginDestList[0].OriginDest[0].OriginCode[0],
+                    arrival: result.Response.DataLists[0].OriginDestList[0].OriginDest[0].DestCode[0],
+                    airline: "A1",
+                    price: offers[i].TotalPrice[0].TotalAmount[0]._,
+                    dep_date: dep_date,
+                    arr_date: dep_date,
+                    dep_time: "10:00AM",
+                    arr_time: "11:00AM" });
+                flight_instance.save(function (err) {
+                    if (err) return handleError(err);
+                    // saved!
+                });
             }
             console.log(jsonFlight);
             callback(jsonFlight);
