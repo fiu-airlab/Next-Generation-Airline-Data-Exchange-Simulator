@@ -12,7 +12,7 @@ exports.oneWayFlights = async (req, res, next) => {
 
   const modifiedDepDate = modifyDate(flightToFind.dep_date);
   // building body xml for AirShoppingRQ
-  var oneWayXmlRQ = airShoppingRQ.airShoppingRQ(flightToFind, modifiedDepDate);
+  var oneWayXmlRQ = airShoppingRQ.airShoppingRQ(flightToFind.departure, flightToFind.arrival, modifiedDepDate);
 
   let fetchedFlights;
   const cachedFlights = Flight.find({ 
@@ -51,43 +51,71 @@ exports.oneWayFlights = async (req, res, next) => {
 exports.roundTripFlights = (req, res, next) => {
   const flightToFind = req.query;
   console.log(flightToFind);
-  const pageSize = +req.query.pagesize;
-  const currentPage = +req.query.page;
 
   const modifiedDepDate = modifyDate(flightToFind.dep_date);
   const modifiedArrDate = modifyDate(flightToFind.arr_date);
-
-  const depFlightQuery =  Flight.find({ dep_date: modifiedDepDate, departure: flightToFind.departure, arrival: flightToFind.arrival});
-  const arrFlightQuery =  Flight.find({ dep_date: modifiedArrDate, departure: flightToFind.arrival, arrival: flightToFind.departure});
+  // building body xml for both AirShoppingRQ
+  var depXmlRQ = airShoppingRQ.airShoppingRQ(flightToFind.departure, flightToFind.arrival, modifiedDepDate);
+  
 
   let fetchedDepFlights;
-  let fetchedArrFlights;
+  const cachedDepFlights = Flight.find({ 
+    dep_date: modifiedDepDate, 
+    departure: flightToFind.departure, 
+    arrival: flightToFind.arrival,
+    airline: "A1" // for testing purposes TODO: Remove
+  });
 
-  if(pageSize && currentPage) {
-    depFlightQuery
-      .skip(pageSize * (currentPage - 1))
-      .limit(pageSize);
-
-    arrFlightQuery
-      .skip(pageSize * (currentPage - 1))
-      .limit(pageSize)
-  }
-
-  depFlightQuery.then(documents => {
+  cachedDepFlights.then(documents => {
     fetchedDepFlights = documents;
-  }).then( () =>{
+  }).then( () => {
+    if (fetchedDepFlights.length >= 1) {
+      console.log('Is cached');
+      // to do caching first flight
+    }
+    else {
+      // http connection to Airline
+      console.log('Is Not cached');
+      http.httpRS(depXmlRQ, modifiedDepDate, (response) => {
 
-  arrFlightQuery.then(documents => {
-    fetchedArrFlights = documents;
-  })
-  .then( () => {
-    console.log(fetchedDepFlights);
-    console.log(fetchedArrFlights);
-    res.status(200).json({
-      message: "Flights fetched successfully!",
-      origin: fetchedDepFlights,
-      destination: fetchedArrFlights,
-      maxFlights: 10
-    })
-  })});
+        fetchedDepFlights = response;
+        var arrXmlRQ = airShoppingRQ.airShoppingRQ(flightToFind.arrival, flightToFind.departure, modifiedArrDate);
+
+        let fetchedArrFlights;
+        const cachedArrFlights = Flight.find({ 
+          dep_date: modifiedArrDate, 
+          departure: flightToFind.arrival, 
+          arrival: flightToFind.departure,
+          airline: "A1" // for testing purposes TODO: Remove
+        });
+
+        cachedArrFlights.then(documents => {
+          fetchedArrFlights = documents;
+        }).then( () => {
+          if (fetchedArrFlights.length >= 1) {
+            console.log('Is cached');
+            res.status(200).json({
+              message: "Flights fetched successfully!",
+              origin: fetchedDepFlights.flights,
+              destination: fetchedArrFlights.flights,
+              maxFlights: 10
+            })
+          }
+          else {
+            // http connection to Airline
+            console.log('Is Not cached');
+            http.httpRS(arrXmlRQ, modifiedArrDate, (response) => {
+              fetchedArrFlights = response;
+              res.status(200).json({
+                message: "Flights fetched successfully!",
+                origin: fetchedDepFlights.flights,
+                destination: fetchedArrFlights.flights,
+                maxFlights: 10
+              });
+            })
+          }
+        });
+      })
+    }
+  });
 }

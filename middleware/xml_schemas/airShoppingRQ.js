@@ -1,15 +1,15 @@
 const builder = require('xmlbuilder');
 
-exports.airShoppingRQ = function(flightToFind, modifiedDepDate) {
+exports.airShoppingRQ = function(departure, arrival, modifiedDepDate) {
     var oneWayXmlRQ = builder.create('Request')
     .ele('FlightCriteria')
         .ele('OriginDestCriteria')
         .ele('DestArrivalCriteria')
-            .ele('IATALocationCode', flightToFind.arrival).up()
+            .ele('IATALocationCode', arrival).up()
         .up()
         .ele('OriginDepCriteria')
             .ele('Date', modifiedDepDate).up()
-            .ele('IATALocationCode', flightToFind.departure).up()
+            .ele('IATALocationCode', departure).up()
         .up()
         .up()
     .up()
