@@ -1,0 +1,19 @@
+.example-viewport {
+    margin-top: 70px;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    height: 80vh;
+    width: 800px;
+    border: 0px solid black;
+    background-color: rgb(255, 255, 255);
+}
+
+.div_class {
+    width: 800px;
+    margin-top: 70px;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0px;
+}

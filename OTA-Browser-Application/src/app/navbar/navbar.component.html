@@ -1,0 +1,39 @@
+<mat-toolbar class="transparent-background fixed-header" color="primary">
+    <span>
+        NGDS
+        <a mat-button (click)="onSearch()">
+            <mat-icon>search</mat-icon>Search
+        </a>
+        <a mat-button (click)="onAboutUs()">
+                <mat-icon>book</mat-icon>About Us
+        </a>
+    </span>
+    <span class="spacer"></span>
+    <ul>
+        <li *ngIf="userisAunthenticated">
+            <a mat-button disabled>
+                <mat-icon>account_circle</mat-icon> {{ first_name }} {{ last_name }}
+            </a>
+        </li>
+        <li *ngIf="!userisAunthenticated">
+            <a mat-button routerLink="/signup" routerLinkActive="mat-accent">
+                <mat-icon>person_add</mat-icon> signup
+            </a>
+        </li>
+        <li *ngIf="!userisAunthenticated">
+            <a mat-button routerLink="/login" routerLinkActive="mat-accent">
+                <mat-icon>account_circle</mat-icon> login
+            </a>
+        </li>
+        <li *ngIf="userisAunthenticated">
+            <a mat-button (click)="onLogout()" routerLinkActive="mat-accent">
+                <mat-icon>power_settings_new</mat-icon> logout
+            </a>
+        </li>
+        <li>
+            <a mat-button (click)="onBooking()" routerLinkActive="mat-accent">
+                <mat-icon [matBadge]="badge">shopping_cart</mat-icon>
+            </a>
+        </li>
+    </ul>
+</mat-toolbar>

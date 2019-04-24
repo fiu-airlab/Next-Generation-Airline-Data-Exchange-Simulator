@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+
+html { 
+    background: url(assets/md-bgs/bg-001.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }

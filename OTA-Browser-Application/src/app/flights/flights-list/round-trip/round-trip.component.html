@@ -1,0 +1,36 @@
+<mat-spinner *ngIf="isLoading" color="accent"></mat-spinner>
+<mat-card class="example-viewport" *ngIf="!isLoading">
+    <mat-list multi="true" *ngIf="origin.length > 0">
+        <mat-list-item *ngFor="let flight of origin; let i = index">
+            <div mat-line>
+                {{ flight.airline }}
+                <mat-icon mat-list-icon>flight_takeoff</mat-icon>
+                <b style="margin-left: 5px">{{ flight.departure }} - {{ flight.arrival }}</b>
+                {{ flight.dep_time }}-{{ flight.arr_time }}
+            </div>
+            <p mat-line>
+                {{ flight.dep_date }} - {{ flight.arr_date }}
+            </p>
+            <mat-divider></mat-divider>
+            <div mat-line>
+                <mat-icon mat-list-icon>flight_landing</mat-icon>
+                <b style="margin-left: 5px">{{ destination[i].departure }} - {{ destination[i].arrival }}</b>
+                {{ destination[i].dep_time }}-{{ destination[i].arr_time }}
+            </div>
+            <p mat-line>
+                {{ destination[i].dep_date }} - {{ destination[i].arr_date }}
+            </p>
+            <mat-divider></mat-divider>
+            <div style="margin-right: 10px">
+                ${{  +origin[i].price + +destination[i].price }}
+            </div>
+            <mat-divider></mat-divider>
+            <a mat-button (click)="onBooking(flight.id, destination[i].id)" routerLinkActive="mat-accent">
+                <mat-icon>add_shopping_cart</mat-icon> book
+            </a>
+        </mat-list-item>
+    </mat-list>
+    <mat-paginator [length]="totalFlights" [pageSize]="flightsPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onChangedPage($event)"
+    *ngIf="origin.length > 0"></mat-paginator>
+    <p class="info-text mat-body-1" *ngIf="origin.length <= 0 && !isLoading">No flights found!</p>
+</mat-card>

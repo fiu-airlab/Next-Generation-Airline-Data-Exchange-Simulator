@@ -1,0 +1,21 @@
+mat-form-field {
+    width: 100%;
+}
+
+mat-spinner {
+    margin: auto;
+}
+
+mat-card {
+    width: 400px;
+    margin-top: 14%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    border-radius: 0px;
+}
+
+button {
+    width: 400px;
+    height: 50px;
+}

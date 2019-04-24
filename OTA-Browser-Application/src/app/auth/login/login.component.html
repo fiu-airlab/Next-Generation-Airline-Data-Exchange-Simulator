@@ -1,0 +1,16 @@
+<mat-spinner *ngIf="isLoading"></mat-spinner>
+<mat-card class="mat-elevation-z5" [@changeDivSize]=currentState>
+    <form (submit)="onLogin(loginForm)" #loginForm="ngForm" *ngIf="!isLoading" >
+        <mat-form-field class="example-full-width" style="width: 98%; margin-right:2%">
+            <input matInput name="email" ngModel type="email" placeholder="E-Mail:" #emailInput="ngModel" required email>
+            <mat-error *ngIf="emailInput.invalid">Please enter a valid email.</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width" style="width: 98%; margin-right:2%">
+            <input matInput type="password" name="password" ngModel placeholder="Password:" aria-label="Number" #passwordInput="ngModel" required>
+            <mat-error *ngIf="passwordInput.invalid">Please enter a valid password.</mat-error>
+        </mat-form-field>
+        <br>
+        <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading">Login</button>
+    </form>
+</mat-card>
