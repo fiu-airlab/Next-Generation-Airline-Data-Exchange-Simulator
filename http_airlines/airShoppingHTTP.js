@@ -33,8 +33,7 @@ exports.httpRS = function (url, airline, bodyXML, departure, arrival, dep_date, 
 
             request(options, function (error, response, body) {
                 if (error) throw new Error(error);
-                // console.log(body);
-                //parsing the response, TODO: parse in another file
+                //parsing the response
                 parser.parseString(body, function (err, result) {
                     if (err) throw new Error(err);
                     var offers = result.Response.OffersGroup[0].CarrierOffers[0].Offer;

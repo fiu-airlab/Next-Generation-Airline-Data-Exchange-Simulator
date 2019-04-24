@@ -1,7 +1,5 @@
-const Flight = require('../models/flight');
 const modifyDate = require('../utils/dates');
 const airShoppingRQ = require('../middleware/xml_schemas/airShoppingRQ');
-
 
 const http = require('../http_airlines/airShoppingHTTP');
 
@@ -15,9 +13,9 @@ exports.oneWayFlights = async (req, res, next) => {
   var oneWayXmlRQ = airShoppingRQ.airShoppingRQ(flightToFind.departure, flightToFind.arrival, modifiedDepDate);
 
   let fetchedFlights = [];
-
+  
   // aggergating airlines
-  http.httpRS('http://35.227.22.121/airshopping', 'A1', oneWayXmlRQ, flightToFind.departure, flightToFind.arrival, modifiedDepDate, (response) => {
+  http.httpRS('http://34.74.178.148/airshopping', 'A1', oneWayXmlRQ, flightToFind.departure, flightToFind.arrival, modifiedDepDate, (response) => {
     var count = Object.keys(response).length;
 
     for (var i = 0; i < count; i++) {
@@ -26,7 +24,7 @@ exports.oneWayFlights = async (req, res, next) => {
   })
   http.httpRS('http://104.196.39.30/airshopping', 'A2', oneWayXmlRQ, flightToFind.departure, flightToFind.arrival, modifiedDepDate, (response) => {
     var count = Object.keys(response).length;
-
+ 
     for (var i = 0; i < count; i++) {
       fetchedFlights.push(response[i]);
     }
@@ -37,6 +35,7 @@ exports.oneWayFlights = async (req, res, next) => {
     for (var i = 0; i < count; i++) {
       fetchedFlights.push(response[i]);
     }
+    console.log(fetchedFlights);
     //return fetchedFlights;*/
     res.status(200).json({
       message: "Flights fetched successfully!",
@@ -62,13 +61,13 @@ exports.roundTripFlights = (req, res, next) => {
   let fetchedArrFlights = [];
 
   // aggergating airlines
-  http.httpRS('http://35.227.22.121/airshopping', 'A1', depXmlRQ, flightToFind.departure, flightToFind.arrival, modifiedDepDate, (response) => {
+  http.httpRS('http://34.74.178.148/airshopping', 'A1', depXmlRQ, flightToFind.departure, flightToFind.arrival, modifiedDepDate, (response) => {
     var count = Object.keys(response).length;
     for (var i = 0; i < count; i++) {
       fetchedDepFlights.push(response[i]);
     }
   })
-  http.httpRS('http://35.227.22.121/airshopping', 'A1', arrXmlRQ, flightToFind.arrival, flightToFind.departure, modifiedArrDate, (response) => {
+  http.httpRS('http://34.74.178.148/airshopping', 'A1', arrXmlRQ, flightToFind.arrival, flightToFind.departure, modifiedArrDate, (response) => {
     var count = Object.keys(response).length;
     for (var i = 0; i < count; i++) {
       fetchedArrFlights.push(response[i]);
@@ -99,6 +98,8 @@ exports.roundTripFlights = (req, res, next) => {
     for (var i = 0; i < count; i++) {
       fetchedArrFlights.push(response[i]);
     }
+    console.log(fetchedDepFlights);
+    console.log(fetchedArrFlights);
     res.status(200).json({
       message: "Flights fetched successfully!",
       origin: fetchedDepFlights,
